@@ -20,7 +20,6 @@ func getBatch(n int64, pool int64) (res []user) {
 	g := &errgroup.Group{}
 	mu := &sync.Mutex{}
 
-	// Limit working goroutines to the pool constraint
 	g.SetLimit(int(pool))
 
 	for i := int64(0); i < n; i++ {
@@ -33,9 +32,7 @@ func getBatch(n int64, pool int64) (res []user) {
 			return nil
 		})
 	}
-
-	// Wait for group to finish, if first non-nil error appears finish our task with no res,
-	// but as far as getOne() returns no errors it will be ok
+	
 	if err := g.Wait(); err != nil {
 		return nil
 	}
